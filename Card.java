@@ -15,16 +15,30 @@ public class Card extends Actor
     private GreenfootImage faceImage;
     private boolean isFaceUp;
     
+    /**
+     * Constructor that initializes an instance of Card to the specified rank and suit.
+     * 
+     * @param rank Rank to set this instance of Card
+     * @param suit Suit to set this instance of Card
+     */
     public Card(Rank rank, Suit suit)
     {
         this(rank, suit, false);
     }
     
+    /**
+     * Constructor that initializes an instance of Card to the specified rank and suit.
+     * if isFaceUp is true, then the card is shown face up with the rank and suit exposed.
+     * 
+     * @param rank Rank to set this instance of Card
+     * @param suit Suit to set this instance of Card
+     * @param isFaceUp a boolean value.  If true this card is shown face up; otherwise face down.
+     */
     public Card(Rank rank, Suit suit, Boolean isFaceUp){
         this.isFaceUp = isFaceUp;
         this.rank = rank;
         this.suit = suit;
-        backImage = new GreenfootImage("cardBack-abstract.png");
+        backImage = new GreenfootImage("cardBack-abstract3.png");
         String suitName = "Clubs/clubs";
         switch (suit){
             case DIAMOND:
@@ -38,33 +52,56 @@ public class Card extends Actor
                 break;
         }
         faceImage = new GreenfootImage(suitName+"_"+rank.getRank()+".png");
-        //backImage.scale((int)(backImage.getWidth()*SCALE), (int)(backImage.getHeight()*SCALE));
-        //faceImage.scale((int)(faceImage.getWidth()*SCALE), (int)(faceImage.getHeight()*SCALE));
-        setImage(backImage);
+        if (isFaceUp){
+            setImage(faceImage);
+        } else {
+            setImage(backImage);
+        }
     }
     
+    /**
+     * Sets this card to face up and sets it's image to display the rank and suit.
+     */
     public void show()
     {
         isFaceUp = true;
         setImage(faceImage);
     }
 
+    /**
+     * Sets this card to face down and sets it's image to display the back of the card.
+     */
     public void hide()
     {
         isFaceUp = false;
         setImage(backImage);
     }
 
+    /**
+     * Returns if this card is face up or down.
+     * 
+     * @returns true if face up; otherwise false.
+     */
     public boolean isFaceUp()
     {
         return isFaceUp;
     }
 
+    /**
+     * Returns the rank of this card.
+     * 
+     * @returns the rank of this card
+     */
     public Rank getRank()
     {
         return rank;
     }
 
+    /**
+     * Returns the suit of this card.
+     * 
+     * @returns the suit of this card
+     */
     public Suit getSuit(){
         return suit;
     }

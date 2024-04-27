@@ -1,6 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.Random;
-
+import java.util.List;
+import java.util.ArrayList;
 /**
  * Write a description of class Deck here.
  * 
@@ -9,79 +10,71 @@ import java.util.Random;
  */
 public class Deck extends Actor
 {
-    private Card[] cards;
-    private int numOfCards;
+    private List<Card> cards;
     
-        public Deck(int numOfDecks){
-        numOfCards = numOfDecks*52;
-        cards = new Card[numOfCards];
-        int index = 0;
+    public Deck(){
+        cards = new ArrayList<Card>();
+    }
+    
+    public Deck(int numOfDecks){
+        int numOfCards = numOfDecks*52;
+        cards = new ArrayList<Card>(numOfCards);
         for (int deckCount=0; deckCount < numOfDecks; deckCount++) {
             for(Suit suit: Suit.values()){
                 for(Rank rank: Rank.values()){
                     if (rank == Rank.JOKER){
                         continue;
                     }
-                    cards[index++] = new Card(rank,suit);
+                    cards.add(new Card(rank,suit));
                 }
             }
         }
         shuffle();
         if (numOfCards > 0){
-            setImage(cards[numOfCards-1].getImage());
+            setImage(cards.get(numOfCards-1).getImage());
         }
     }
     
+    public Card dealCard() {
+        if (!cards.isEmpty()) {
+            return cards.remove(0);
+        } else {
+            return null; // Deck is empty, return null or handle accordingly
+        }
+    }
     public void shuffle(){
         Random rand = new Random();
+        int numOfCards = cards.size();
         for(int index = 0; index < numOfCards-1; index++){
             int swapIndex = rand.nextInt(numOfCards-index) + index;
-            Card temp = cards[index];
-            cards[index] = cards[swapIndex];
-            cards[swapIndex] = temp;
+            Card temp = cards.get(index);
+            cards.add(index, cards.get(swapIndex));
+            cards.add(swapIndex, temp);
         }
-    }
-    
-    private void grow(){
-        Card[] tempCards = new Card[cards.length*2];
-        for(int index=0; index < numOfCards; index++){
-            tempCards[index] = cards[index];
-        }
-        cards = tempCards;
     }
     
     public boolean isEmpty(){
-        return numOfCards == 0;
+        return cards.isEmpty();
     }
 
-    /**
-     * Removes the first occurrence of aCard from the deck.  This method
-     * will find the first occurrence of a card that has the same suit and
-     * rank as aCard and remove it from the deck.
-     * 
-     * @param aCard an instance of a Card to be removed from the deck.
-     */
     public boolean remove(Card aCard){
-        // TODO: Need to implement
-        return false;
+        return cards.remove(aCard);
     }
 
     public void add(Card aCard){
-        if (numOfCards >= cards.length){
-            grow();
-        }
-        cards[numOfCards] = aCard;
-        numOfCards++;
-        if (numOfCards > 0){
-            setImage(cards[numOfCards-1].getImage());
-        }
+        cards.add(aCard);
     }
     
     public Card deal(boolean isFaceUp){
-        Card topCard = cards[numOfCards-1];
-        cards[numOfCards-1] = null;
-        numOfCards--;
+        Card topCard = deal();
+        if (isFaceUp){
+            topCard.show();
+        }
         return topCard;
+    }
+    
+    public Card deal(){
+        return cards.remove(cards.size()-1);
     }
     
     public void deal(Deck[] deck, int numOfCardsToDeal, boolean isFaceUp){
@@ -90,6 +83,14 @@ public class Deck extends Actor
             Card card = deal(isFaceUp);
             deck[cardCount % deck.length].add(card);
         }
+    }
+    
+    public int getSize(){
+        return cards.size();
+    }
+    
+    protected List<Card> getCards(){
+        return cards;    
     }
     
     @Override
