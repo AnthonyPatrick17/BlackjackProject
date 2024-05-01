@@ -17,5 +17,13 @@ public class ShopWorld extends World
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(600, 400, 1); 
+        setBackground();
+        addObject(new BackButton(), 25, 20);
+        
+        
+    }
+    private void setBackground(){
+        GreenfootImage ShopImage = new GreenfootImage("shop_screen.png");
+        setBackground(ShopImage);
     }
 }
